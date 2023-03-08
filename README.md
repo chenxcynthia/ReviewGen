@@ -1,5 +1,6 @@
 # Rationale-Based Language Modeling for Generating Evaluations of Scientific Papers
 Cynthia Chen, Rohan Doshi, Eric Hansen
+
 CS 282 Final Project
 
 - [1. Background](#1-background)
