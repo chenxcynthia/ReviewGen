@@ -1,11 +1,6 @@
 /__pycache__
-<<<<<<< HEAD
-/.ipynb_checkpoints
-.DS_Store
-=======
 /dataset
 /outputdata
 **/.ipynb_checkpoints
 /seqlab_final
 .DS_Store
->>>>>>> 5682fbf (Parallelize CE Extraction)
