@@ -217,3 +217,54 @@ class Extractor:
         samples = [np.random.binomial(1, p=out_p) for j in range(1)]
         extracted = get_text(samples[0], filtered_sents)
         return extracted
+    
+def extract_file(i):
+    try:
+        
+        lst = []
+
+        t0 = time.time()
+        paper_dict = {}
+
+        # Check whether content and review info exist, if not, exclude paper
+        kind = 'paper'
+        fname = workdir + 'dataset/NIPS_2017/NIPS_2017_'+kind+'/NIPS_2017_'+str(i)+'_'+kind+'.json'
+        with open(fname, 'r', encoding='utf8') as f:
+            content_dict = json.loads(f.read())
+
+        return []
+
+        # Get basic paper information
+        paper_dict['title'] = content_dict['title']
+        paper_dict['decision'] = content_dict['decision']
+        paper_dict['conference'] = content_dict['conference']
+
+        # Get longform paper text and use the extractor to condense
+        kind = 'content'
+        fname = workdir + 'dataset/NIPS_2017/NIPS_2017_'+kind+'/NIPS_2017_'+str(i)+'_'+kind+'.json'
+        fulltext = get_full_text(fname)
+        extraction = extractor.extract(fulltext)
+        paper_dict['text'] = extraction
+
+        # Get reviews
+        kind = 'review'
+        fname = workdir + 'dataset/NIPS_2017/NIPS_2017_'+kind+'/NIPS_2017_'+str(i)+'_'+kind+'.json'
+        with open(fname, 'r', encoding='utf8') as f:
+            content_dict = json.loads(f.read())
+        reviews = []
+
+        for r in content_dict['reviews']:
+            paper_dict_with_review = paper_dict.copy()
+            paper_dict_with_review['review'] = r['review']
+            lst.append(paper_dict_with_review)
+    #         reviews.append(r['review'])
+    #         paper_dict['reviews'] = reviews
+
+
+        t1 = time.time()
+        print('finished in ' + str(t1 - t0) + ' seconds')
+    except Exception as e:
+        print("EXCEPTION! " + str(e))
+        raise("EXCEPTION! " + str(e))
+
+    return lst
