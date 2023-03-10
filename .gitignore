@@ -1,6 +1,7 @@
 /__pycache__
+
 /dataset
-/outputdata
+/outputdata/*
 **/.ipynb_checkpoints
 /seqlab_final
 .DS_Store

@@ -61,12 +61,13 @@ def extract_file(i, sub_dir='NIPS_2017', output_dir='outputdata/'):
             json.dump(lst, f)
 
         t1 = time.time()
-#         print('finished in ' + str(t1 - t0) + ' seconds')
+        status = 'finished in ' + str(t1 - t0) + ' seconds'
     except Exception as e:
-        print("EXCEPTION! " + str(e))
-        return -1
+        status = "EXCEPTION! " + str(e)
+        raise("EXCEPTION! " + str(e))
+        return (-1, status)
 
-    return 0
+    return 0, status
 
 import multiprocessing
 
@@ -83,7 +84,6 @@ def run_extraction(st, end, sub_dir):
         with concurrent.futures.ProcessPoolExecutor() as executor:
             results = executor.map(extract_file, list(range(cur_st, cur_st+inc)), [sub_dir for _ in range(inc)])
 
-        all_results.extend(results)
         cur_st += inc
-        
-    return all_results
+        for res in results:
+            print(res)
