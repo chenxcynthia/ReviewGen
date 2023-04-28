@@ -31,6 +31,6 @@ For each dataset (one per extraction method), we fine-tuned the bart-large-cnn p
 ## 4. Experimental Results
 
 
-## 3. Model Evaluation and Explanation
+## 5. Model Evaluation and Explanation
 
 For each dataset (one per extraction method), we fine-tuned the bart-large-cnn pre-trained model on the review generation task. Due to GPU costs and time constraints, we downsampled each dataset to 1000 paper+review pairs for this checkpoint. We selected our hyperparameters (epochs, learning_rate, weight_decay, batch_size) based on the HuggingFace guide on experimentation, tuning them slightly based on small sub-sample experiments. We select the best model based on validation accuracy across all epochs. Our loss function is the cross-entropy loss over the token embeddings, as is standard in Seq2Seq models. 
