@@ -1,12 +1,13 @@
 # ReviewGen: Rationale-Based Language Modeling for Generating Evaluations of Scientific Papers
 Cynthia Chen, Rohan Doshi, Eric Hansen
 
-CS 282BR: Topics in Machine Learning: Interpretability & Explainability
+CS 282BR (Topics in Machine Learning: Interpretability & Explainability) Final Project.
 
-- [1. Background](#1-background)
-- [2. Data](#2-data)
-- [3. Methods and Model](#3-methods)
-- [4. Results](#4-results)
+1. [Background](#1-background)
+2. [Data](#2-data)
+3. [Model Training](#3-Model-Training)
+4. [Experimental Results](#4-Experimental-Results)
+5. [Model Evaluation and Explanation](#2-Model-Evaluation-and-Explanation)
 
 ## 1. Background
 Ratings and reviews are at the heart of the peer review process for scientific research, as scores establish quality standards while reviews build faith in the process. But, generating these assessments is time consuming for researchers given the high volume of submissions. We want to explore the effectiveness of LLMs in reviewing and rating a corpus of scientific papers. 
@@ -21,10 +22,15 @@ The core problem for building transformers models using research papers as input
 We completed the data extraction and then trained and evaluated three BART models  on a 1000 subsample, computing the Rouge-1, Rouge-2, Rouge-L, and BertScores on three models trained on different input texts generated using three different extraction methods, taking the best results from a single epoch out of 4 total epochs. 
 
 
-## 3. Methods and Model Implementation
+## 3. Model Training
 
 For each dataset (one per extraction method), we fine-tuned the bart-large-cnn pre-trained model on the review generation task. Due to GPU costs and time constraints, we downsampled each dataset to 1000 paper+review pairs for this checkpoint. We selected our hyperparameters (epochs, learning_rate, weight_decay, batch_size) based on the HuggingFace guide on experimentation, tuning them slightly based on small sub-sample experiments. We select the best model based on validation accuracy across all epochs. Our loss function is the cross-entropy loss over the token embeddings, as is standard in Seq2Seq models. 
 
 
 
-## 4. Results
+## 4. Experimental Results
+
+
+## 3. Model Evaluation and Explanation
+
+For each dataset (one per extraction method), we fine-tuned the bart-large-cnn pre-trained model on the review generation task. Due to GPU costs and time constraints, we downsampled each dataset to 1000 paper+review pairs for this checkpoint. We selected our hyperparameters (epochs, learning_rate, weight_decay, batch_size) based on the HuggingFace guide on experimentation, tuning them slightly based on small sub-sample experiments. We select the best model based on validation accuracy across all epochs. Our loss function is the cross-entropy loss over the token embeddings, as is standard in Seq2Seq models. 
