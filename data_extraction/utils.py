@@ -2,6 +2,10 @@
 
 import json
 import sys
+import os
+import time
+import pickle
+
 from collections import Counter
 from typing import List
 
@@ -10,6 +14,13 @@ import numpy as np
 import traceback
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
+
+import seaborn as sns
+import matplotlib.pylab as plt
+import numpy as np
+import pandas as pd
+import concurrent.futures
+import multiprocessing
 
 sys.setrecursionlimit(1000000)
 nltk.download('stopwords')
@@ -218,9 +229,14 @@ class Extractor:
         extracted = get_text(samples[0], filtered_sents)
         return extracted
     
-def extract_file(i):
+# Load Cross-Entropy Extractor using keywords and parameters specified in directory
+extractor = Extractor('keywords.txt', 'parameters.txt')
+
+# Extract Reviews, Paper Text, and Metadata for paper i from a given conference  
+# Write Extracted JSON Object to File
+# returns (0, message) if successful or (-1, exception_message) if failed
+def extract_file(i, sub_dir='NIPS_2017', output_dir='outputdata/', workdir='../'):
     try:
-        
         lst = []
 
         t0 = time.time()
@@ -228,11 +244,9 @@ def extract_file(i):
 
         # Check whether content and review info exist, if not, exclude paper
         kind = 'paper'
-        fname = workdir + 'dataset/NIPS_2017/NIPS_2017_'+kind+'/NIPS_2017_'+str(i)+'_'+kind+'.json'
+        fname = workdir + f'dataset/{sub_dir}/{sub_dir}_'+kind+f'/{sub_dir}_'+str(i)+'_'+kind+'.json'
         with open(fname, 'r', encoding='utf8') as f:
             content_dict = json.loads(f.read())
-
-        return []
 
         # Get basic paper information
         paper_dict['title'] = content_dict['title']
@@ -241,14 +255,14 @@ def extract_file(i):
 
         # Get longform paper text and use the extractor to condense
         kind = 'content'
-        fname = workdir + 'dataset/NIPS_2017/NIPS_2017_'+kind+'/NIPS_2017_'+str(i)+'_'+kind+'.json'
+        fname = workdir + f'dataset/{sub_dir}/{sub_dir}_'+kind+f'/{sub_dir}_'+str(i)+'_'+kind+'.json'
         fulltext = get_full_text(fname)
         extraction = extractor.extract(fulltext)
         paper_dict['text'] = extraction
 
         # Get reviews
         kind = 'review'
-        fname = workdir + 'dataset/NIPS_2017/NIPS_2017_'+kind+'/NIPS_2017_'+str(i)+'_'+kind+'.json'
+        fname = workdir + f'dataset/{sub_dir}/{sub_dir}_'+kind+f'/{sub_dir}_'+str(i)+'_'+kind+'.json'
         with open(fname, 'r', encoding='utf8') as f:
             content_dict = json.loads(f.read())
         reviews = []
@@ -260,11 +274,35 @@ def extract_file(i):
     #         reviews.append(r['review'])
     #         paper_dict['reviews'] = reviews
 
+        with open(workdir + output_dir + f'{sub_dir}_ce_extract_{i}.json', 'w', encoding='utf-8') as f:
+            json.dump(lst, f)
 
         t1 = time.time()
-        print('finished in ' + str(t1 - t0) + ' seconds')
+        status = 'finished in ' + str(t1 - t0) + ' seconds'
     except Exception as e:
-        print("EXCEPTION! " + str(e))
-        raise("EXCEPTION! " + str(e))
+        status = "EXCEPTION! " + str(e)
+        return (-1, status)
 
-    return lst
+    return 0, status
+
+# Parallelizes execution of extract_file method for all papers in range [st, end) for a given conference
+def run_extraction(st, end, conference_dir):
+    n_cpu = multiprocessing.cpu_count()
+    n_jobs = n_cpu - 2
+    
+    cur_st = st
+    all_results = []
+    while cur_st < end:
+        inc = min(n_jobs, end-cur_st)
+        print(cur_st)
+    
+        with concurrent.futures.ProcessPoolExecutor() as executor:
+            results = executor.map(extract_file, list(range(cur_st, cur_st+inc)), [conference_dir for _ in range(inc)])
+
+        cur_st += inc
+        for res in results:
+            print(res)
+
+# Count words in a text block
+def count_tokens(st):
+     return len(st.split(' '))
