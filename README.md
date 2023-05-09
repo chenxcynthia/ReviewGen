@@ -31,7 +31,7 @@ See Final_Modeling.ipynb for our final model implementation which involved fine-
 
 ## 4. Results
 
-Read our full paper `ReviewGenPaper.pdf` for a detailed explanation of our paper's methods, motivation, results, and takeaways.
+Read our full paper `ReviewGen_CS282_FinalProjectSubmission.pdf` for a detailed explanation of our paper's methods, motivation, results, and takeaways.
 
 See `sample_model_generated_reviews_and_metadata.csv` and `ReviewGenComparisonOfReviews.pdf` for examples of generated reviews from different models trained on different subsets of the 6 prediction tasks mentioned above.
 
