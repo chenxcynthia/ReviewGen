@@ -1,7 +1,7 @@
 # ReviewGen: Rationale-Based Language Modeling for Generating Evaluations of Scientific Papers
 Cynthia Chen, Rohan Doshi, Eric Hansen
 
-CS 282BR (Topics in Machine Learning: Interpretability & Explainability) Final Project.
+Harvard CS 282BR (Topics in Machine Learning: Interpretability & Explainability)
 
 1. [Background](#1-background)
 2. [Data](#2-data)
