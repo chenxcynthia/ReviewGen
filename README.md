@@ -17,7 +17,7 @@ First, we want to study if decoding rationales (e.g. the human-written paper rev
 We will experiment with different model architectures and data preprocessing steps. On the modeling front, we plan to explore various pre-training and fine-tuning recipes, using dual-decoding architectures to jointly decode both scores and rationales, as well as techniques similar to those found in papers like "Large Language Models Can Self-Improve." On the data front, we want to explore feature engineering approaches for representing the reviews in the training data. Finally, we want to assess the quality of the generated reviews to better understand how much interpretability is added through our approach.
 
 ## 2. Data
-We used the dataset from the ReviewAdvisor paper. See their GitHub repository [here](https://github.com/neulab/ReviewAdvisor). In particular, we use their `tagger` methods and BERT model for token classification of the dataset reviews.
+We used the dataset from Yuan et al. in their ReviewAdvisor paper (see their [GitHub repository](https://github.com/neulab/ReviewAdvisor)). In particular, we use their `tagger` methods and BERT model for token classification of the dataset reviews.
 
 We also re-implemented their data pre-processing methods, which can be found in the `data_extraction` directory. Se `Pre-Processing_Data_Analysis.ipynb` for additional dataset pre-processing and analysis.
 
@@ -25,11 +25,21 @@ We completed the data extraction and then trained and evaluated three BART model
 
 The zipped extracted & pre-processed dataset we used in this project, whose files are references in various Jupyer Notebooks, can be downloaded at this [link](https://drive.google.com/file/d/1Mtu5ztDB2nGtW_StiABXHcg5F_cYyDoU/view?usp=sharing). Because of file size issues, we did not include this data in the GitHub repo.
 
-See Final_Modeling.ipynb for our final model implementation which involved fine-tuning a base BART model on subsets of 6 different prediction tasks, aspect score token classification, review generation, binary classification of conference decisions, rating predicion, confidence score prediction, and citation prediction.
+See `Final_Modeling.ipynb` for our final model implementation which involved fine-tuning a base BART model on subsets of 6 different prediction tasks, aspect score token classification, review generation, binary classification of conference decisions, rating predicion, confidence score prediction, and citation prediction.
 
 ## 3. Model Training
 
+
+- **Review Generation**: We fine-tuned a pre-trained BART Seq2Seq model for a various of single and joint prediction tasks.
+- **Joint Prediction Approach**: We take the final hidden layer outputs from the BART model and feed them into feature-specific 3-Layer MLPs for each prediction task (reviews, ratings, citations, aspect categories, etc.). We introduce per-feature loss scaling and normalize feature values to determine trade-offs between prediction tasks.
+- **Section-Specific Review Generation**: We construct a new dataset for each Aspect Label and fine-tune a Seq2Seq model on each one, allowing us to create a composite review broken into sections for clarity.
+
 ## 4. Results
+
+Key takeaways:
+- Joint prediction improves results on predicting reviews, citations, aspect categories, and metadata
+- Models with more prediction tasks, especially if more disparate, require more training epochs. Loss scaling impacts relative performance of each task
+- The “summary” section of reviews tend to be high-quality, whereas others (e.g. clarity) tend to be generic, repetitive (e.g. “the paper is well written”), and occasionally incorrect
 
 Read our full paper `ReviewGen_CS282_FinalProjectSubmission.pdf` for a detailed explanation of our paper's methods, motivation, results, and takeaways.
 
